@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,9 @@
   <script src="/js/jquery-3.3.1.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/homecss.css">
 </head>
+
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Album Express</a>
@@ -22,9 +25,23 @@
           <span class="sr-only">(current)</span>
         </a>
         <a class="nav-item nav-link" href="/upload">Upload</a>
-        <!-- <a class="nav-item nav-link" href="#">Pricing</a> -->
       </div>
     </div>
   </nav>
+  <div class="container divgridfolder">
+    <div class="row">
+      <% for(var i = 0; i < folders.length; i++){%>
+        <div class="col-xs-6 col-md-3 divImgGroup">
+          <a href="/<%= folders[i]%>">
+            <img src="/images/folder.jpg" alt="<%= folders[i]%>" class="img-thumbnail imgfolder">
+          </a>
+          <p>
+            <%= folders[i] %>
+          </p>
+        </div>
+        <%}%>
+    </div>
+  </div>
 </body>
+
 </html>
