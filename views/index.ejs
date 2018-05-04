@@ -10,6 +10,11 @@
   <script src="/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/homecss.css">
+  <style>
+  .positionDiv{
+    margin-top: 10px;
+  }
+  </style>
 </head>
 
 <body>
@@ -21,25 +26,53 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link active" href="#">Home
+        <a class="nav-item nav-link active" href="/">Home
           <span class="sr-only">(current)</span>
         </a>
         <a class="nav-item nav-link" href="/upload">Upload</a>
       </div>
     </div>
   </nav>
+  <div class="container positionDiv">
+    <div class="row">
+      <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <% for(var i = 0; i < pathsArray.length; i++){ %>
+              <% if(pathsArray.length == i+1) { %>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <%= pathsName[i]%>
+                </li>
+              <% } else { %>
+                <li class="breadcrumb-item">
+                  <a href="<%= pathsArray[i]%>">
+                    <%= pathsName[i]%>
+                  </a>
+                </li>
+                <% } %>
+            <% } %>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
   <div class="container divgridfolder">
     <div class="row">
       <% for(var i = 0; i < folders.length; i++){%>
         <div class="col-xs-6 col-md-3 divImgGroup">
-          <a href="/<%= folders[i]%>">
-            <img src="/images/folder.jpg" alt="<%= folders[i]%>" class="img-thumbnail imgfolder">
+          <% if(currentDir == '/'){ %>
+            <a href="<%= currentDir + folders[i]%>">
+          <% }else{ %>
+            <a href="<%= currentDir + '/' + folders[i]%>">
+          <% } %>
+            <img src="/images/folder.jpg" class="img-thumbnail imgfolder">
           </a>
           <p>
             <%= folders[i] %>
           </p>
         </div>
-        <%}%>
+      <%}%>
     </div>
   </div>
 </body>
