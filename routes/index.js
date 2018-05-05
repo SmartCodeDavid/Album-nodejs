@@ -1,9 +1,18 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
+var fileController = require('../controllers/FileController');
 
 router.get('/upload', function(req, res) {
+  //get options
+  fileController.readFiles(process.cwd() + '/public/folders/', 'dir', function(err, files){
+    if(err) {
+      throw err;
+      return;
+    }
 
+    res.render('upload', {'selections' : files});
+  });
 });
 
 function generatePathsArray(req){
@@ -44,31 +53,7 @@ router.use('/:folderName', function (req, res, next) {
     res.render('index', { folders: files, currentDir: req.originalUrl, pathsArray: array, pathsName: pathsNames});
   }
   var pathDir = `${process.cwd()}/public/folders${req.originalUrl}/`;
-  console.log(pathDir);
-  fs.readdir(pathDir, function (err, files) {
-    if (err) {
-     next();
-     return;
-    }
-    if(files.length == 0) {
-      callback(null, folders);
-    }
-    files.forEach(function (file, index) {
-      fs.stat(pathDir + file, function (err, stats) {
-        if (err) {
-          next();
-          return;
-        }
-        if (stats.isDirectory) {
-          folders.push(file);
-          console.log(folders);
-        }
-        if (files.length == index + 1) {
-          callback(null, folders);
-        }
-      });
-    })
-  });
+  fileController.readFiles(pathDir, '*', callback);
 });
 
 
@@ -77,31 +62,16 @@ router.get('/', function (req, res, next) {
   ////get dirctories
   var folders = [];
   var callback = function (err, files) {
-    if (err)
-      throw err;
+    if (err){
+      next();
+      return;
+    }  
     var array = generatePathsArray(req);
     var pathsNames = ['Home'];
     res.render('index', { folders: files, currentDir: req.originalUrl, pathsArray: array, pathsName: pathsNames });
     // res.render('index', { folders: files, currentDir: req.originalUrl, pathsArray: array, pathsName: array });
   }
-  console.log(process.cwd());
-  fs.readdir(process.cwd() + '/public/folders/', function (err, files) {
-    if (err)
-      throw err;
-    files.forEach(function (file, index) {
-      fs.stat(process.cwd() + '/public/folders/' + file, function (err, stats) {
-        if (err)
-          throw err;
-        if (stats.isDirectory) {
-          folders.push(file);
-          console.log(folders);
-        }
-        if (files.length == index + 1) {
-          callback(null, folders);
-        }
-      });
-    })
-  });
+  fileController.readFiles(process.cwd() + '/public/folders/', 'dir', callback);
 });
 
 router.get('/upload', function (req, res) {
