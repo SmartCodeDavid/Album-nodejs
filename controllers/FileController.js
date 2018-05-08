@@ -9,11 +9,12 @@ exports.readFiles = function(directoryPath, options, callback){
             return;
         }
         if(files.length == 0) {
-            callback(null, fileArray);
+            callback(null, fileArray, directoryPath);
             return ;
         }
         files.forEach(function(file, index){
-            fs.stat(directoryPath + file, function(err, stats){
+            //
+            fs.stat(directoryPath + '/' + file, function(err, stats){
                 if(err) {
                     throw err;
                     return;
@@ -27,7 +28,7 @@ exports.readFiles = function(directoryPath, options, callback){
                 }
 
                 if(index + 1 == files.length) {
-                    callback(null, fileArray);
+                    callback(null, fileArray, directoryPath);
                     return;
                 }
             });

@@ -19,7 +19,7 @@ router.post('/upload', function(req, res){
     form.type = true;
 
     //2MB size maximun of uploaded file
-    form.maxFileSize = 2 * 1024 * 1024;
+    //form.maxFileSize = 2 * 1024 * 1024;
     
     form.multiples = true;
 
@@ -86,7 +86,11 @@ function generatePathsArray(req){
   if(req.originalUrl == '/') {
     return ['/'];
   }
-  var array = req.originalUrl.split('/');
+  if (req.originalUrl.endsWith('/')) {
+    pathDir = req.originalUrl.substring(0, req.originalUrl.lastIndexOf('/'));
+  }
+  //var array = req.originalUrl.split('/');
+  var array = pathDir.split('/');
   var pathStr = '';
   if (array.length > 1) {
     var tempArray = [];
@@ -110,16 +114,26 @@ router.use('/:folderName', function (req, res, next) {
   console.log(req.baseUrl);
   console.log(req.originalUrl);
   console.log(req.url);
-  var callback = function (err, files) {
+  var callback = function (err, files, pathDir) {
     if (err) {
       next();
       return;
     }
     var array = generatePathsArray(req);
+    if (req.originalUrl.endsWith('/') == true) {
+      req.originalUrl = req.originalUrl.substring(0, req.originalUrl.lastIndexOf('/'));
+      console.log(req.originalUrl);
+    }
     var pathsNames = ['Home'].concat(req.originalUrl.split('/').slice(1));
+    
     res.render('index', { folders: files, currentDir: req.originalUrl, pathsArray: array, pathsName: pathsNames});
   }
-  var pathDir = `${process.cwd()}/public/folders${req.originalUrl}/`;
+  
+  var pathDir = `${process.cwd()}/public/folders${req.originalUrl}`;
+  if(pathDir.endsWith('/') == true) {
+    pathDir = pathDir.substring(0, pathDir.lastIndexOf('/'));
+    console.log(pathDir);
+  }
   fileController.readFiles(pathDir, '*', callback);
 });
 
