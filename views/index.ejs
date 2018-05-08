@@ -14,10 +14,47 @@
   .positionDiv{
     margin-top: 10px;
   }
+  .greycover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color:black;
+    z-index: 10000;
+    display: none;
+  }
+  .viedeoDiv {
+    position: relative;
+    background-color: black;
+    width: 60%;
+    height: 60%;
+    top: 60%;
+    left: 60%;
+    margin: -20% -40%;
+  }
+
+  .closeBar {
+    width: 100%;
+    height: 10%;
+    text-align: right;
+  }
+
+  .btnClose:hover{
+    background-color: bisque;
+  }
   </style>
 </head>
 
 <body>
+  <div class="greycover">
+    <div class="viedeoDiv">
+      <div class="closeBar">
+        <button class="btn btnClose">Close</button>
+      </div>
+      <video id="video" width="100%" height="100%" controls autoplay>
+        <source src="" type="video/mp4">
+      </video>
+    </div>
+  </div>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Album Express</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
@@ -62,12 +99,14 @@
       <% for(var i = 0; i < folders.length; i++){%>
         <div class="col-xs-6 col-md-3 divImgGroup">
           <% if(currentDir == '/'){ %>
-            <a href="<%= currentDir + folders[i]%>">
+            <a href="javascript:void(0)">
+            <input type="hidden" value="<%= currentDir + folders[i]%>">
           <% }else{ %>
-            <a href="<%= currentDir + '/' + folders[i]%>">
+            <a href="javascript:void(0)">
+            <input type="hidden" value="<%= currentDir + '/' + folders[i]%>">
           <% } %>
             <img src="/images/folder.jpg" class="img-thumbnail imgfolder">
-          </a>
+            </a>
           <p>
             <%= folders[i] %>
           </p>
@@ -75,6 +114,27 @@
       <%}%>
     </div>
   </div>
+
+  <script>
+    window.onload = function(){
+       $('a').click(function(event){
+         var href = event.currentTarget.firstElementChild.value;
+         if(href.endsWith('.mp4')) {
+           //show video
+           $('.greycover').fadeIn();
+           $('#video').attr('src', href);
+           $('#video')[0].play();
+         }else{  
+           window.location = href;
+         }
+       });
+
+       $('.btnClose').click(function(event){
+         $('#video')[0].pause();
+         $('.greycover').fadeOut();
+       });
+    }
+  </script>
 </body>
 
 </html>
